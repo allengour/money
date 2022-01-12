@@ -76,7 +76,9 @@ def preprocess(month, cards):
   for file in cards['amexca']:
     df = pd.read_csv(file[0], header=None)
     df = df[[0, 2, 3]]  # drop reference # and any comments
-    df.columns = ['date', 'credit', 'item']
+    df.columns = ['date', 'amount', 'item']
+    df['debit'] = np.where(df['amount'] < 0, abs(df['amount']), np.nan)
+    df['credit'] = np.where(df['amount'] >= 0, df['amount'], np.nan)
     df['who'] = file[1]
     df['card'] = 'amex ca'
     df['currency'] = 'CAD'
@@ -86,7 +88,9 @@ def preprocess(month, cards):
   print('--> processing amex us')
   for file in cards['amexus']:
     df = pd.read_csv(file[0], header=0)  # drop header column
-    df.columns = ['date', 'item', 'credit']
+    df.columns = ['date', 'item', 'amount']
+    df['debit'] = np.where(df['amount'] < 0, abs(df['amount']), np.nan)
+    df['credit'] = np.where(df['amount'] >= 0, df['amount'], np.nan)
     df['who'] = file[1]
     df['card'] = 'amex us'
     df['currency'] = 'USD'
