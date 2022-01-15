@@ -7,9 +7,8 @@ import numpy as np
 import pandas as pd
 
 # TODO:
-# remove the giant tabs in amex us line items
+# remove the giant tabs in amex us & chase line items
 # train a model on the categories
-# find a way to differentiate TD csvs
 # decide if GCP is overkill
 # paste it directly into Sheets using API
 # decide if savings, investing should connect, currently does not
@@ -66,7 +65,7 @@ def get_files():
         cards['visaca'].append(full_file)
       elif 'activity' in file:
         cards['amexus'].append(full_file)
-      elif 'td' in file:  # need to manually rename debit csvs
+      elif 'td' in file:
         cards['cheqca'].append(full_file)
 
   return cards

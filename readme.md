@@ -23,3 +23,12 @@ in the **spend** spreadsheet.
 - FR: paste into Sheets with API
 - don't like manually renaming TD credit card csv...
 - train a model
+
+### google sheets credentials
+- not uploading credentials because that is illegal
+- need a `credentials.json` file with API access credentials
+- Desktop credentials in Google Sheets API under `allengour-personal` gcp
+[project](https://console.cloud.google.com/apis/credentials?project=allengour-personal)
+following [docs](https://developers.google.com/workspace/guides/create-credentials#desktop-app)
+- google account has to be listed as a test user under oauth consent screen,
+since the app is not 'published'
