@@ -22,9 +22,11 @@ def main(month):
   # preprocess
   cards = preprocess.get_files()
   transactions = preprocess.preprocess(month, cards, save=False)
-  print(f'-> done: {len(transactions)} rows preprocessed')
+  print(f'-> {len(transactions)} rows preprocessed')
   # insert into sheet
-  # sheets.insert(transactions)
+  print('-> uploading...')
+  sheets.insert(transactions)
+  print('-> done.')
 
 
 if __name__ == '__main__':

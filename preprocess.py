@@ -35,7 +35,6 @@ def get_files():
     file = full_file[0]
     # rename td debit files to separate debit & credit
     if 'accountactivity' in file:
-      print(f'preprocessing: {file}')
       if input(f'--> is {file} a debit/chequing statement? (Y/n): ') == 'Y':
         oldfile = file
         full_file = ('/'.join(file.split('/')[:-1]) + f'/td{rename_count}.csv',
