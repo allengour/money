@@ -140,7 +140,8 @@ def preprocess(month, cards, save=False):
   df = df.loc[~df['item'].str.contains('THANK YOU')]
   # check date i.e. remove rows that aren't from the right month
   df['date'] = pd.to_datetime(df['date'])
-  df = df[df['date'].dt.month == month]
+  if month != 0: # secret feature, if month = 0 don't filter
+    df = df[df['date'].dt.month == month]
   df['date'] = df['date'].dt.strftime(config['date_format'])
   df.sort_values(['date', 'who', 'card', 'item'], inplace=True)
 
