@@ -1,0 +1,9 @@
+date_format: '%Y/%m/%d'
+input_folder: '/Users/allengour/Desktop'
+allen_folder: 'allen'
+jessica_folder: 'jessica'
+output_folder: '/Users/allengour/Desktop'
+columns: ['date', 'who', 'card', 'currency', 'item', 'debit', 'credit', 'category']
+scope: ['https://www.googleapis.com/auth/spreadsheets']
+spreadsheet_id: '1L7z1fCWIOWNmrNaGrDSsv1XvMV6QqNcAr4jPxZthIl8'
+range: 'data!B2:I2'
