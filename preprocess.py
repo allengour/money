@@ -30,18 +30,8 @@ def get_files():
       'cheqca': [],
   }
 
-  rename_count = 0  # accumulator so we don't overwrite with rename
   for full_file in files:
     file = full_file[0]
-    # rename td debit files to separate debit & credit
-    if 'accountactivity' in file:
-      if input(f'--> is {file} a debit/chequing statement? (Y/n): ') == 'Y':
-        oldfile = file
-        full_file = ('/'.join(file.split('/')[:-1]) + f'/td{rename_count}.csv',
-                     full_file[1])
-        os.rename(oldfile, full_file[0])
-        rename_count += 1
-
     # sort by statement
     if file.lower()[-4:] == '.csv':
       if 'Chase' in file:
@@ -49,11 +39,13 @@ def get_files():
       elif 'ofx' in file:
         cards['amexca'].append(full_file)
       elif 'accountactivity' in file:
-        cards['visaca'].append(full_file)
+        # prompt user to decide if visa or chequing
+        if input(f'--> is {file} a visa statement (Y enter, N: n)? ') == '':
+          cards['visaca'].append(full_file)
+        else:
+          cards['cheqca'].append(full_file)
       elif 'activity' in file:
         cards['amexus'].append(full_file)
-      elif 'td' in file:
-        cards['cheqca'].append(full_file)
 
   return cards
 

@@ -6,7 +6,7 @@ Allen & Jess' spending tracking, budgeting, and insights
 1. Download **csv** statements for a given month from bank/credit card websites. 
 Sometimes one month's spending is across two statements (TD), or need to 
 manually adjust the time range (Amex). TD debit and credit have same format and 
-filename, so need to tell the script which files are debit (renames to 'td')
+filename, so need to tell the script which files are debit
 2. Put Allen's files into a folder, and Jess' files into a folder. default 
 `~/Desktop/allen` & `~/Desktop/jessica`
 3. Run `spend [month]` where `month` is the month number. `spend` is short for 
