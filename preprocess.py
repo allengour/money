@@ -1,4 +1,4 @@
-'''preprocesses bank csv exports for spend spreadsheet fom local folder'''
+"""Preprocesses bank csv exports for spend spreadsheet fom local folder."""
 
 import os
 import yaml
@@ -7,11 +7,11 @@ import pandas as pd
 
 
 def get_files():
-  '''Assembles list of file tuples for data preprocessing
+  """Assembles list of file tuples for data preprocessing.
 
   Returns:
     dict, of list of tuples; key:bank, val:[(str filepath, str who)...]
-  '''
+  """
   with open('config.yaml', 'r', encoding='utf8') as infile:
     config = yaml.safe_load(infile)
 
@@ -23,6 +23,7 @@ def get_files():
                  f'{config["input_folder"]}/{config["jessica_folder"]}')]
 
   cards = {
+      'aaplus': [],
       'amexus': [],
       'amexca': [],
       'visaca': [],
@@ -34,7 +35,9 @@ def get_files():
     file = full_file[0]
     # sort by statement
     if file.lower()[-4:] == '.csv':
-      if 'Chase' in file:
+      if 'Apple' in file:
+        cards['aaplus'].append(full_file)
+      elif 'Chase' in file:
         cards['chequs'].append(full_file)
       elif 'ofx' in file:
         cards['amexca'].append(full_file)
@@ -51,7 +54,7 @@ def get_files():
 
 
 def preprocess(month, cards, save=False):
-  '''Preprocesses CSVs from each bank into one DataFrame with consistent format
+  """Preprocesses CSVs from each bank into one DataFrame with consistent format.
 
   Args:
     month: int, month number to process
@@ -60,7 +63,7 @@ def preprocess(month, cards, save=False):
 
   Returns:
     list, preprocessed data
-  '''
+  """
   with open('config.yaml', 'r', encoding='utf8') as infile:
     config = yaml.safe_load(infile)
   processed = []
@@ -127,12 +130,26 @@ def preprocess(month, cards, save=False):
     df = df.reindex(columns=config['columns'], fill_value=np.nan)
     processed.append(df)
 
+  print('---> processing aapl us')
+  for file in cards['aaplus']:
+    df = pd.read_csv(file[0], header=0)  # drop header column
+    print(df)
+    df = df.drop(df.columns[[1, 3, 4, 5, 7]], axis=1)  # drop balance tab
+    df.columns = ['date', 'item', 'amount']
+    df['debit'] = np.where(df['amount'] < 0, abs(df['amount']), np.nan)
+    df['credit'] = np.where(df['amount'] >= 0, df['amount'], np.nan)
+    df['who'] = file[1]
+    df['card'] = 'aapl us'
+    df['currency'] = 'USD'
+    df = df.reindex(columns=config['columns'], fill_value=np.nan)
+    processed.append(df)
+
   df = pd.concat(processed)
   # TODO: make this an exclusion list type thing
   df = df.loc[~df['item'].str.contains('THANK YOU')]
   # check date i.e. remove rows that aren't from the right month
   df['date'] = pd.to_datetime(df['date'])
-  if month != 0: # secret feature, if month = 0 don't filter
+  if month != 0:  # secret feature, if month = 0 don't filter
     df = df[df['date'].dt.month == month]
   df['date'] = df['date'].dt.strftime(config['date_format'])
   df.sort_values(['date', 'who', 'card', 'item'], inplace=True)
