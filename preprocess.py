@@ -83,8 +83,8 @@ def preprocess(month, cards, save=False):
 
   print('---> processing amex us')
   for file in cards['amexus']:
-    df = pd.read_csv(file[0], header=0)  # drop header column
-    df = df[df.columns[[0, 1, 4]]]  # drop card member & account number
+    df = pd.read_csv(file[0], header=0)
+    df = df[['Date', 'Description', 'Amount']]  # Drop irrelevant columns.
     df.columns = ['date', 'item', 'amount']
     df['debit'] = np.where(df['amount'] < 0, abs(df['amount']), np.nan)
     df['credit'] = np.where(df['amount'] >= 0, df['amount'], np.nan)
