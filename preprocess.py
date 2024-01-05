@@ -5,6 +5,17 @@ import yaml
 import numpy as np
 import pandas as pd
 
+_EXCLUSION_LIST = [
+    'THANK YOU',
+    'APPLECARD GSBANK PAYMENT',  # Apple payment, manual.
+    'APPLE GS SAVINGS TRANSFER',  # Apple savings transfer, manual.
+    'to Apple Savings',  # Apple savings transfer.
+    'AMERICAN EXPRESS ACH PMT',  # Amex payment.
+    'ROBINHOOD        Funds      ',  # Robinhood autofunding.
+    'ROBINHOOD        DEBITS     ',  # Robinhood autofunding.
+    'ACH DEPOSIT INTERNET TRANSFER FROM ACCOUNT ENDING IN',  # Apple payment.
+]
+
 
 def get_files():
   """Assembles list of file tuples for data preprocessing.
@@ -146,8 +157,11 @@ def preprocess(month, cards, save=False):
     processed.append(df)
 
   df = pd.concat(processed)
-  # TODO: make this an exclusion list type thing
-  df = df.loc[~df['item'].str.contains('THANK YOU')]
+
+  # Drop rows which contain strings to exclude.
+  for e in _EXCLUSION_LIST:
+    df = df[~df['item'].str.contains(e)]
+
   # check date i.e. remove rows that aren't from the right month
   df['date'] = pd.to_datetime(df['date'])
   if month != 0:  # secret feature, if month = 0 don't filter
